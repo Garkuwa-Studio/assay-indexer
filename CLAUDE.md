@@ -2,7 +2,7 @@
 
 The data service of Assay, by Garkuwa Labs. Org repos: assay (core) ·
 assay-indexer (this) · assay-board · proposals · .github. Spec: Prompt 0b
-(10-build-prompts.md) and D1 (11-demo-sprint-prompts.md) in the core repo.
+(10-build-prompts.md) and D1 (11-demo-sprint-prompts.md) in ../proposals/specs/.
 
 ## What it does
 Census of anchored Stellar assets → SEP-1 fields → reserve-report fetch and
@@ -19,6 +19,9 @@ snapshots + read-only API → (later) supply-witness posts to the registry.
 - Manual transcriptions (data/manual/*.yaml) must include source URL, page,
   date transcribed and transcriber; the API marks them as such.
 - Every output carries the ledger and timestamp it was computed at.
+- Supply is not published (API returns null) until the Horizon formula is
+  reconciled with an independent source at a pinned ledger. D0 found a
+  0.053% gap for USDC vs stellar.expert (assay/docs/STACK-STATUS.md §2).
 - API is versioned (/v1); breaking changes need a new version.
 - Unit tests use recorded fixtures, never the live network.
 - The supply-witness signing key (later) is read from the environment only,

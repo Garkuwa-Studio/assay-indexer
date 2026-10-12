@@ -1,0 +1,18 @@
+{
+  "sep": "reserve-report-v0",
+  "asset": "USDX:GDVEU3DD4KOFECV66VIHWEZOYX4ZKR3WV27L464SIIPOU2IUI3JCZA57",
+  "as_of": "2026-09-30T23:59:59Z",
+  "ledger": 64000000,
+  "reserves": [
+    { "type": "cash", "amount": "600000.00", "unit": "USD" },
+    { "type": "treasury_bill", "amount": "410000.00", "unit": "USD" }
+  ],
+  "liabilities": { "supply": "1000000.00", "unit": "USDX" },
+  "attestor": {
+    "name": "Example Audit LLP",
+    "stellar_key": "GDVEU3DD4KOFECV66VIHWEZOYX4ZKR3WV27L464SIIPOU2IUI3JCZA57",
+    "role": "auditor"
+  },
+  "evidence": [{ "uri": "https://example.org/report.pdf" }],
+  "signature": "not-verified-in-v0"
+}

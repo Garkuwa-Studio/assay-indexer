@@ -16,13 +16,20 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "lint": "eslint . && prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "census": "tsx src/run.ts",
+    "census:dist": "node dist/run.js",
+    "enrich": "tsx src/enrich.ts"
   },
   "dependencies": {
     "@hono/node-server": "2.1.4",
     "@stellar/stellar-sdk": "17.2.1",
     "hono": "4.13.13",
-    "yaml": "2.9.1"
+    "smol-toml": "1.9.1",
+    "tldts": "7.4.18",
+    "unpdf": "1.8.1",
+    "yaml": "2.9.1",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

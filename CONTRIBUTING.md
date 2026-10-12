@@ -19,4 +19,4 @@ PRs welcome. Sign off every commit under the
 `pnpm lint && pnpm typecheck && pnpm test` must pass.
 
 Security issues: report privately via
-[GitHub private vulnerability reporting](https://github.com/garkuwa-labs/assay-indexer/security/advisories/new).
+[GitHub private vulnerability reporting](https://github.com/Garkuwa-Studio/assay-indexer/security/advisories/new).

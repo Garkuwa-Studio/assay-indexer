@@ -3,3 +3,4 @@ coverage/
 data/snapshots/
 pnpm-lock.yaml
 *.md
+data/cache/

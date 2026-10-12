@@ -1,0 +1,27 @@
+# Recorded-style fixture modelled on real files seen in D0 (values are test data).
+[DOCUMENTATION]
+ORG_NAME = "Example Issuer"
+
+[[CURRENCIES]]
+code = "USDX"
+issuer = "GDVEU3DD4KOFECV66VIHWEZOYX4ZKR3WV27L464SIIPOU2IUI3JCZA57"
+is_asset_anchored = true
+anchor_asset_type = "fiat"
+anchor_asset = "USD"
+attestation_of_reserve = "https://example.org/reserves.json"
+redemption_instructions = "Redeem via example.org"
+
+[[CURRENCIES]]
+code = "BOND"
+issuer = "GDVEU3DD4KOFECV66VIHWEZOYX4ZKR3WV27L464SIIPOU2IUI3JCZA57"
+is_asset_anchored = true
+anchor_asset_type = "bond"
+anchor_asset = "MXN government bonds"
+attestation_of_reserve = "https://example.org/report.pdf"
+
+[[CURRENCIES]]
+toml = "https://example.org/.well-known/GOLD.toml"
+
+[[CURRENCIES]]
+code = "MEME"
+issuer = "GDVEU3DD4KOFECV66VIHWEZOYX4ZKR3WV27L464SIIPOU2IUI3JCZA57"
