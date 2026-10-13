@@ -1,0 +1,47 @@
+name: Correction
+description: Tell us an entry on the Assay board is wrong. Issuers and anyone else can file one.
+title: "Correction: "
+labels: ["correction"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping keep the board accurate. We check every correction, fix confirmed
+        errors in the next census, and log each correction publicly with its date.
+        Please do not include personal or confidential information.
+  - type: input
+    id: asset
+    attributes:
+      label: Asset
+      description: CODE-ISSUER, as shown on the asset page (filled in when you follow the link from the board).
+      placeholder: CETES-GCRYUGD5NVARGXT56XEZI5CIFCQETYHAPQQTHO2O3IQZTHDH4LATMYWC
+    validations:
+      required: true
+  - type: dropdown
+    id: what
+    attributes:
+      label: What is wrong?
+      options:
+        - Reserve link or report status
+        - Report date or figures
+        - Issuer domain or stellar.toml details
+        - Holder count
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What should it say, and where can we check?
+      description: A link to the source we should use (for example your stellar.toml or reserve report) lets us confirm it quickly.
+    validations:
+      required: true
+  - type: dropdown
+    id: relation
+    attributes:
+      label: Are you the issuer?
+      options:
+        - "Yes, I represent the issuer"
+        - "No"
+    validations:
+      required: false
