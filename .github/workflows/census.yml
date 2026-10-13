@@ -1,0 +1,86 @@
+# Weekly mainnet census.
+#   1. Runs a fresh census + enrichment (about 1.5 hours).
+#   2. Commits the small board file (data/snapshots/board-YYYY-MM-DD.json),
+#      which is also the history the board's chart reads.
+#   3. Publishes a GitHub Release "snapshot-YYYY-MM-DD" with the board file
+#      and the full snapshot (gzipped). The board pulls from the latest one:
+#      https://github.com/Garkuwa-Studio/assay-indexer/releases/latest/download/board.json
+# Full snapshots (about 25 MB) are not committed, to keep the repo small.
+name: census
+
+on:
+  schedule:
+    - cron: "0 3 * * 1" # Mondays 03:00 UTC; the board picks it up at 08:00
+  workflow_dispatch:
+    inputs:
+      max_assets:
+        description: "Cap the run for testing (leave empty for a full census)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: census
+  cancel-in-progress: false
+
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330 # GitHub's limit is 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Census and enrichment
+        run: |
+          args="--fresh --concurrency 32"
+          if [ -n "${{ inputs.max_assets }}" ]; then args="$args --max-assets ${{ inputs.max_assets }}"; fi
+          pnpm census $args
+
+      - name: Find this run's files
+        id: files
+        run: |
+          board=$(ls data/snapshots/board-*.json | sort | tail -1)
+          date=$(basename "$board" .json | sed 's/^board-//')
+          echo "board=$board" >> "$GITHUB_OUTPUT"
+          echo "date=$date" >> "$GITHUB_OUTPUT"
+          echo "full=data/snapshots/$date.json" >> "$GITHUB_OUTPUT"
+          jq -c .summary "$board"
+
+      - name: Refuse a capped run as a published snapshot
+        if: inputs.max_assets != ''
+        run: |
+          echo "Capped test run (max_assets=${{ inputs.max_assets }}): not committing or releasing."
+          exit 0
+
+      - name: Commit the board file
+        if: inputs.max_assets == ''
+        run: |
+          git config user.name "assay-census[bot]"
+          git config user.email "assay-census[bot]@users.noreply.github.com"
+          git add "${{ steps.files.outputs.board }}"
+          git diff --cached --quiet && { echo "No change"; exit 0; }
+          git commit -m "Data: census snapshot ${{ steps.files.outputs.date }}"
+          git push
+
+      - name: Publish release
+        if: inputs.max_assets == ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          d=${{ steps.files.outputs.date }}
+          cp "${{ steps.files.outputs.board }}" board.json
+          gzip -9 -c "${{ steps.files.outputs.full }}" > "snapshot-$d.json.gz"
+          summary=$(jq -r '.summary | "Assets checked: \(.assets_checked) · with a working reserve link: \(.with_working_link) · self-declared anchored: \(.self_declared_anchored)"' board.json)
+          ledgers=$(jq -r '"Ledgers \(.ledger_start)–\(.ledger_end), computed \(.computed_at)"' board.json)
+          gh release delete "snapshot-$d" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "snapshot-$d" board.json "snapshot-$d.json.gz" \
+            --title "Census snapshot $d" \
+            --notes "$summary"$'\n\n'"$ledgers"$'\n\n'"board.json: the board's headline set. snapshot-$d.json.gz: every asset the census kept. Figures as stated by issuers or attestors; not an audit, not investment advice." \
+            --latest

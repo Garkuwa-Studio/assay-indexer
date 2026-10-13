@@ -6,3 +6,6 @@ coverage/
 !.env.example
 .DS_Store
 data/cache/
+# Full census snapshots (~25 MB) are published as GitHub Release assets, not
+# committed. The small board-*.json files are committed (history).
+data/snapshots/[0-9]*.json
